@@ -68,16 +68,17 @@ def logout():
 def home():
     return render_template("home.html")
 
+#funcion para redirigir al login si el usuario intenta ingresar una url y no se encuentra logeado
 def status_401(error):
     return redirect(url_for('login'))
 
+#funcion para motrar mensajes si el usuario intenta ingresar a una url no definida
 def status_404(error):
     return "<h1>Pagina no encontrada</h1>", 404
 
 #validacion para ejecutar el servidor y que este en constante movimiento
 if __name__ == '__main__':
-    #utilizo la configuracion del diccionario config en su llave development
-    app.config.from_object(config['development'])
-    app.register_error_handler(401, status_401)
-    app.register_error_handler(404, status_404)
+    app.config.from_object(config['development']) #utilizo la configuracion del diccionario config en su llave development
+    app.register_error_handler(401, status_401) #utilizo metodo para utilizar la funcion del error 401
+    app.register_error_handler(404, status_404) #utilizo metodo para utilizar la funcion del error 401
     app.run()
