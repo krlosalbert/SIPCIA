@@ -6,13 +6,13 @@ class ModelUser():
     def login(self, db, user):
         try:
             cursor = db.connection.cursor()
-            sql = """SELECT UserId, UserName, UserLastName, UserAddres, UserPhone, UserEmail, UserIdCard, UserPassword, RolId 
-                    FROM tbluser WHERE UserIdCard={} AND UserPassword={}""".format(user.UserIdCard, user.UserPassword)
+            sql = """SELECT UserId, UserName, UserLastName, UserAddres, UserPhone, UserEmail, UserIdCard, UserPassword, RoleId 
+                    FROM tbluser WHERE UserIdCard={}""".format(user.UserIdCard)
             cursor.execute(sql)
             row = cursor.fetchone()
 
             if row != None:
-                user = User(row[0],row[1],row[2],row[3],row[4],row[5],row[6],row[7],row[8])
+                user = User(row[0], row[1], row[2], row[3], row[4], row[5], row[6], User.check_password(row[7], user.UserPassword), row[8])
                 return user
             else:
                 return None
