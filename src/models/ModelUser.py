@@ -39,9 +39,23 @@ class ModelUser():
     def Users(self, db):
         try:
             cursor = db.connection.cursor()
-            sql = "SELECT UserId, UserName, UserLastName, UserAddres, UserPhone, UserEmail, UserIdCard, RoleId FROM tbluser"
+            sql = "SELECT u.UserId, u.UserName, u.UserLastName, u.UserAddres, u.UserPhone, u.UserEmail, u.UserIdCard, r.RoleDescription FROM tbluser u INNER JOIN tblrole r ON u.RoleId=r.RoleId"
             cursor.execute(sql)
             user_list = cursor.fetchall()
             return user_list
+        except Exception as ex:
+            raise Exception(ex)
+
+    @classmethod # esto es para usar la funcion sin instanciar la clase ModelUser
+    def InsertUsers(self, db, user):
+        try:
+            con = db.connection
+            cursor = con.cursor()
+            sql = """INSERT INTO tbluser (UserName, UserLastName, UserAddres, UserPhone, UserEmail, UserIdCard, UserPassword, RoleId) 
+                    VALUES("{}", "{}", "{}", {}, "{}", {}, "{}", {})""".format(user.Name, user.LastName, user.Addres, user.Phone, user.Email, user.IdCard, user.password, user.RolId)
+            cursor.execute(sql)
+            result = con.commit()
+            
+            return result
         except Exception as ex:
             raise Exception(ex)

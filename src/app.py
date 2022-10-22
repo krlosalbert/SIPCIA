@@ -9,7 +9,7 @@
     pip install Flask-MySQLdb
 '''
 
-from flask import Flask, render_template, request, redirect, url_for, flash
+from flask import Flask, render_template, request, redirect, url_for, flash, session
 from flask_mysqldb import MySQL
 from flask_login import LoginManager, login_user, logout_user, login_required
 
@@ -54,6 +54,7 @@ def login():
         if logged_user != None:
             if logged_user.password:
                 login_user(logged_user)
+                session['user']=logged_user.Name
                 return redirect(url_for('home'))
             else:
                 flash("Contraseña incorrecta, Intentelo de nuevo") 
@@ -64,10 +65,30 @@ def login():
     else:
         return render_template("login.html")
 
-@app.route('/users')
-def users():
+#creo nueva utilizando el decorador @
+@app.route('/home')
+@login_required
+def home():
+    return render_template("home.html")
+    
+@app.route('/ViewUsers')
+def ViewUsers():
     users_list = ModelUser.Users(db)
-    return render_template("users.html", users=users_list)
+    return render_template("Users/ViewUsers.html", users=users_list)
+
+@app.route('/FormUsers')
+def FormUsers():
+    return render_template("Users/FormUsers.html")
+
+@app.route('/registerUsers', methods=['POST'])
+def registerUsers():
+    if request.method == 'POST':
+        lastName = "sanchez"
+        registerUser = User(None, request.form['name'], lastName, request.form['addres'], request.form['phone'], request.form['email'], request.form['idCard'], request.form['password'], request.form['role'])
+        new_registerUser = ModelUser.InsertUsers(db,registerUser)
+        print(new_registerUser)
+        #if new_registerUser:
+        return redirect(url_for('ViewUsers'))
 
 #creo ruta de cerrar sesion
 @app.route('/logout')
@@ -75,12 +96,6 @@ def logout():
     logout_user()
     return render_template("login.html")
 
-#creo nueva utilizando el decorador @
-@app.route('/home')
-@login_required
-def home():
-    return render_template("home.html")
-    
 #funcion para redirigir al login si el usuario intenta ingresar una url y no se encuentra logeado
 def status_401(error):
     return redirect(url_for('login'))

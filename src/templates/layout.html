@@ -17,7 +17,7 @@
         <script src="https://unpkg.com/sweetalert/dist/sweetalert.min.js"></script>
         
         <!-- el jquery y un archivo propio -->
-        <!-- <script src="../Js/jquery-3.4.1.min.js"></script> -->
+        <script src="{{ url_for('static', filename='js/jquery-3.4.1.min.js') }}"></script>
         {%  block customCSS %}
         {% endblock %}
         <title>SIPCIA</title>
@@ -37,10 +37,10 @@
                     </a>
                     <ul class="dropdown-menu" role="menu">
                         <li>
-                        <a href="#">Nuevo</a>
+                        <a href="/FormUsers">Nuevo</a>
                         </li>
                         <li>
-                        <a href="/users">Consultar</a>
+                        <a href="/ViewUsers">Consultar</a>
                         <li>
                         <a href="#">Rol</a>
                         </li>
@@ -133,8 +133,8 @@
                         <div class="collapse navbar-collapse" id="navbarText">
                             <ul class="navbar-nav ms-auto">
                                 <li class="nav-item">
-                                    <a class="navbar-brand" href="">
-                                    {{ current_user.UserName }}
+                                    <a class="navbar-brand"> <!-- current_user.UserName -->
+                                    {{ session['user'] }}
                                     </a>
                                 </li>
                                 <li class="nav-item">
