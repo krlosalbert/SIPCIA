@@ -51,12 +51,23 @@ def login():
     if request.method == 'POST':
         user = User(None, None, None, None, None, None, request.form['user'], request.form['password'], None)
         logged_user = ModelUser.login(db,user)
-    if logged_user != None:
-        login_user(logged_user)
-        return redirect(url_for('home'))
+        if logged_user != None:
+            if logged_user.password:
+                login_user(logged_user)
+                return redirect(url_for('home'))
+            else:
+                flash("Contraseña incorrecta, Intentelo de nuevo") 
+                return render_template("login.html")  
+        else:
+            flash("El usuario ingresado no fue encontrado....") 
+            return render_template("login.html")
     else:
-        flash("El usuario o la contraseña son incorrectas") 
         return render_template("login.html")
+
+@app.route('/users')
+def users():
+    users_list = ModelUser.Users(db)
+    return render_template("users.html", users=users_list)
 
 #creo ruta de cerrar sesion
 @app.route('/logout')
